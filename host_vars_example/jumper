@@ -1,0 +1,13 @@
+project_name: 'jumper'
+
+ruby_version: '2.2.0'
+rbenv_root: '{{ home }}/.rbenv'
+db:
+  name: '{{name}}_staging'
+  user: '{{user}}'
+  user_password: 2349sfsdf2374
+  encoding: utf8
+nvm:
+  root: '{{ home }}/.nvm'
+  version: v0.25.1
+  node_version: '0.12.2'

@@ -1,0 +1,20 @@
+- name: 'nginx | check config'
+  command: 'test -f /etc/nginx/sites-enabled/{{ project_name }}.conf'
+  register: 'nginx_config_copied'
+  ignore_errors: yes
+  tags: 'nginx'
+
+- name: 'nginx | createdir'
+  shell: 'rm /etc/nginx/sites-enabled/default; mkdir -p etc/nginx/sites-enabled/'
+  when: 'nginx_config_copied|failed'
+  tags: 'nginx'
+
+- name: 'nginx | copy config'
+  template: 'src=nginx.conf dest=/etc/nginx/sites-enabled/{{ project_name }}.conf owner=root group=root mode=0644'
+  when: 'nginx_config_copied|failed'
+  tags: 'nginx'
+
+- name: 'nginx | restart service'
+  service: name=nginx state=restarted
+  when: 'nginx_config_copied|failed'
+  tags: 'nginx'

@@ -1,0 +1,23 @@
+- name: Restart PostgreSQL
+  command: service postgresql restart
+  tags: 'postgres'
+
+- name: create the postgresql user for application
+  postgresql_user: name={{ db_user }} password={{ db_password }} role_attr_flags=CREATEDB,NOSUPERUSER
+  sudo: yes
+  sudo_user: postgres
+  tags: 'postgres'
+
+- name: create the postgresql database for application
+  postgresql_db: name={{ db_name }} owner={{ db_user }} encoding={{ db_encoding }} state=present
+  sudo: yes
+  sudo_user: postgres
+  tags: 'postgres'
+
+- name: 'postgresql | make shared dir'
+  file: path={{project_root}}/shared/config owner={{ user }} group={{ user }} state=directory
+  tags: 'postgres'
+
+- name: 'postgresql | copy database.yml'
+  template: 'src=database.yml dest={{ project_root }}/shared/config/database.yml owner={{ user }} group={{ user }} mode=0644'
+  tags: 'postgres'

@@ -1,0 +1,21 @@
+- name: 'nvm | install'
+  git: 'repo=https://github.com/creationix/nvm.git dest={{ nvm_root }} version={{ nvm_version }} accept_hostkey=yes'
+  remote_user: '{{ user }}'
+  tags: 'node'
+
+- name: 'nvm | Source nvm'
+  lineinfile: >
+    dest={{ home }}/.profile
+    line="source {{ nvm_root }}/nvm.sh"
+  remote_user: '{{ user }}'
+  tags: 'node'
+
+- name: 'nvm | Install {{ node_version }}'
+  shell: bash -lc 'nvm install {{ node_version }} && nvm alias default {{ node_version }}'
+  remote_user: '{{ user }}'
+  tags: 'node'
+
+- name: 'npm | Install bower'
+  shell: bash -lc 'npm install -g bower'
+  remote_user: '{{ user }}'
+  tags: 'node'

@@ -1,0 +1,7 @@
+jumper ansible_ssh_host=192.168.1.50 ansible_ssh_port=5555
+
+[webservers]
+www[01:50].example.com
+
+[databases]
+db-[a:f].example.com

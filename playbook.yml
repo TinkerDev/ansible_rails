@@ -1,0 +1,20 @@
+---
+- hosts: all
+  remote_user: 'root'
+  vars:
+    user: 'www{{ project_name }}'
+    home: '/home/{{ user }}'
+    project_root: '{{ home }}/{{ project_name }}'
+    rbenv_root: '{{ home }}/.rbenv'
+
+    db_name: '{{project_name}}'
+    db_user: '{{user}}'
+    db_encoding: utf8
+
+    nvm_root: '{{ home }}/.nvm'
+  roles:
+    - dependencies
+    - ruby
+    - postgres
+    - nginx
+    - node
