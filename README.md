@@ -1,19 +1,22 @@
-### This is a group of ansible recipes we use in out projects
+### This is a group of ansible roles that I use
 
 
-Copy example hosts file into real one, edit it after
+Copy example hosts file into real one and edit it after
 
     cp hosts_example hosts
-
+    cp host_vars_example host_vars
 
 Use default roles from playbook
 
     ansible-playbook playbook.yml -i hosts --limit=jumper
 
-Or use specific roles
+Or select that you need
 
-     ansible-playbook playbook.yml -i hosts -t ruby,deploy,postgresql,nginx --limit=jumper
+     ansible-playbook playbook.yml -i hosts -t dependencies,ruby,postgres,nginx --limit=jumper
 
 List of roles:
+  - dependencies
+  - ruby
+  - postgres
   - nginx
-
+  - bower
