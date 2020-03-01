@@ -1,11 +1,30 @@
 - name: 'node | setting apt repositories'
-  shell: 'curl -sL https://deb.nodesource.com/setup_{{node_version}}.x | sudo bash -'
+  shell: 'curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -'
   tags: 'node'
 
 - name: 'node | install nodejs'
   apt:
     pkg: nodejs
   tags: 'node'
+
+- name: 'node | Make sure HTTPS is supported by apt'
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+
+- name: 'node | Import YARN APT key'
+  apt_key:
+    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
+    state: present
+
+- name: 'node| Install YARN APT repo'
+  apt_repository:
+    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+    filename: "yarn"
+    state: present
+    update_cache: yes
+
 
 - name: 'node | install yarn'
   apt:
