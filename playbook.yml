@@ -1,20 +1,24 @@
 ---
 - hosts: all
-  remote_user: 'root'
+  remote_user: root
   vars:
     user: 'www{{ project_name }}'
     home: '/home/{{ user }}'
     project_root: '{{ home }}/{{ project_name }}'
     rbenv_root: '{{ home }}/.rbenv'
-
     db_name: '{{project_name}}'
     db_user: '{{user}}'
     db_encoding: utf8
-
     nvm_root: '{{ home }}/.nvm'
+
+  pre_tasks:
+    - name: apt-get update
+      raw: apt-get update -qq
+  gather_facts: no
   roles:
     - dependencies
     - ruby
     - postgres
     - nginx
     - node
+    - redis

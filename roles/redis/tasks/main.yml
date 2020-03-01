@@ -1,0 +1,5 @@
+- name: 'redis | install redis-server'
+  apt:
+    pkg:
+      - 'redis-server'
+  tags: 'redis'

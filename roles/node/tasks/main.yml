@@ -1,0 +1,13 @@
+- name: 'node | setting apt repositories'
+  shell: 'curl -sL https://deb.nodesource.com/setup_{{node_version}}.x | sudo bash -'
+  tags: 'node'
+
+- name: 'node | install nodejs'
+  apt:
+    pkg: nodejs
+  tags: 'node'
+
+- name: 'node | install yarn'
+  apt:
+    pkg: yarn
+  tags: 'node'

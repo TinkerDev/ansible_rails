@@ -1,60 +1,54 @@
-- name: 'rbenv | clone repo'
-  git: 'repo=git://github.com/sstephenson/rbenv.git dest={{ rbenv_root }} accept_hostkey=yes'
+- name: 'ruby | clone rbenv repo'
+  become: yes
+  become_user: "{{ user }}"
+  git: repo=https://github.com/rbenv/rbenv.git dest={{ rbenv_root }}
   tags: 'ruby'
 
-- name: 'rbenv | check ruby-build installed'
-  command: 'test -x {{ rbenv_root }}/plugins/ruby-build'
-  register: 'rbenv_installed'
-  ignore_errors: yes
+- name: 'ruby | export rbenv path'
+  become: yes
+  become_user: "{{ user }}"
+  lineinfile:
+    path: "{{home}}/.bashrc"
+    state: present
+    line: 'export PATH="${HOME}/.rbenv/bin:${PATH}"'
   tags: 'ruby'
 
-- name: 'rbenv | add bin to path'
-  shell: echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> {{ home }}/.bashrc
-  when: 'rbenv_installed|failed'
+- name: 'ruby | export rbenv path'
+  become: yes
+  become_user: "{{ user }}"
+  lineinfile:
+    path: "{{home}}/.bashrc"
+    state: present
+    line: 'eval "$(rbenv init -)"'
   tags: 'ruby'
 
-- name: 'rbenv | init'
-  shell: echo 'eval "$(rbenv init -)"' >> {{ home }}/.bashrc
-  when: 'rbenv_installed|failed'
+- name: 'ruby | install ruby build'
+  become: yes
+  become_user: "{{ user }}"
+  git: repo=https://github.com/rbenv/ruby-build.git dest={{ rbenv_root }}/plugins/ruby-build
   tags: 'ruby'
 
-- name: 'rbenv | clone ruby-build repo'
-  git: 'repo=git://github.com/sstephenson/ruby-build.git dest={{ rbenv_root }}/plugins/ruby-build accept_hostkey=yes'
-  when: 'rbenv_installed|failed'
+- name: 'ruby | install ruby'
+  become: yes
+  become_user: "{{ user }}"
+  shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv install {{ ruby_version }} --skip-existing'
   tags: 'ruby'
 
-- name: 'rbenv | check ruby {{ ruby_version }} installed'
-  shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv versions | grep {{ ruby_version }}'
-  register: 'ruby_installed'
-  ignore_errors: yes
-  tags: 'ruby'
 
-- name: 'rbenv | install ruby {{ ruby_version }}'
-  shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv install {{ ruby_version }}'
-  when: 'ruby_installed|failed'
-  tags: 'ruby'
-
-- name: 'rbenv | set global ruby {{ ruby_version }}'
+- name: 'ruby  | set global ruby {{ ruby_version }}'
+  become: yes
+  become_user: "{{ user }}"
   shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv global {{ ruby_version }}'
-  when: 'ruby_installed|failed'
   tags: 'ruby'
 
-- name: 'rbenv | rehash'
+- name: 'ruby  | rbenv rehash'
+  become: yes
+  become_user: "{{ user }}"
   shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv rehash'
-  when: 'ruby_installed|failed'
-  tags: 'ruby'
-
-- name: 'rbenv | create .gemrc'
-  lineinfile: 'dest={{ home }}/.gemrc owner={{ user }} group={{ user }} mode=0644 line="gem: --no-ri --no-rdoc" create=yes'
-  when: 'ruby_installed|failed'
   tags: 'ruby'
 
 - name: 'ruby | install bundler'
+  become: yes
+  become_user: "{{ user }}"
   shell: 'RBENV_ROOT={{ rbenv_root }} PATH="$RBENV_ROOT/bin:$PATH" rbenv exec gem install bundler'
-  when: 'ruby_installed|failed'
-  tags: 'ruby'
-
-- name: 'rbenv | change owner'
-  shell: 'chown -R {{ user }}:{{ user }} {{ rbenv_root }}'
-  when: 'ruby_installed|failed'
   tags: 'ruby'
