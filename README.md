@@ -31,7 +31,7 @@ List of roles:
   - postgres
   - nginx
   - node
-  - yarn
+  - redis
   
   
 ## You also need in your capfile
