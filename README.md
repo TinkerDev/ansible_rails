@@ -36,15 +36,11 @@ List of roles:
   
 ## You also need in your capfile
 
-    require "capistrano/rbenv"
-    require 'capistrano/nvm'
+    require "capistrano/rbenv"    
     require "capistrano/bundler"
-    require "capistrano/rails"
-    require "capistrano/rails/assets"
-    require "capistrano/rails/migrations"
+    require "capistrano/rails"    
     require "capistrano/puma"
     install_plugin Capistrano::Puma
     require "capistrano/sidekiq"
     require "whenever/capistrano"
-    require 'capistrano-db-tasks'
-    require 'capistrano/yarn'
+    require 'capistrano-db-tasks'    
